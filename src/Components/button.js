@@ -3,8 +3,18 @@ import {TouchableHighlight, Text, StyleSheet, Dimensions, ProgressViewIOSCompone
 
 
 export default (props) => {
+
+    const styleButton = [style.button]
+    if(props.zero)
+    {
+        styleButton.push(style.zero)
+    } 
+    if(props.func) {
+        styleButton.push(style.func)
+    }
+
     return(
-        <TouchableHighlight style={style.button} onPress={props.onClick}>
+        <TouchableHighlight style={styleButton} onPress={props.onClick}>
             <Text style={style.pad}>{props.value}</Text>
         </TouchableHighlight>
     )
@@ -15,12 +25,18 @@ const style = StyleSheet.create({
         flexDirection: 'row',
         alignItems:'center',
         justifyContent: 'center',
-        backgroundColor: '#f6e4ae',
+        backgroundColor: '#f4f4f4',
         width: Dimensions.get('window').width/4,
         height: Dimensions.get('window').width/4,
     },
     pad:{
         fontSize: 50,
+    },
+    zero:{
+        width: Dimensions.get('window').width/2
+    },
+    func:{
+        backgroundColor:'#fcb206'
     }
 
 
