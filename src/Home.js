@@ -17,33 +17,58 @@ export default class App extends Component
       
 
     clearDisplay = () =>{
-        this.setState({displayValue: '0', digit: ''})
+   
+        this.setState({
+            displayValue: '0',
+            digit: '',
+            infor: [0,0],
+            mem: false,
+            mem2: false,
+            currentOp :''
+            })
+        
     }
     addDigit = digit =>{
-        if(this.state.digit == '0' && this.state.displayValue == '0') {
-            this.state.displayValue = '0'
+        console.warn(this.state.currentOp)
+        
+        if(this.state.mem2){
+            this.setState({
+                displayValue: '0',
+                digit: '',
+                currentOp :'',
+                mem2: false
+                })
+           
         }
-        if(this.state.digit == '.' && !this.state.displayValue) this.state.digit += '.'
+        if(digit == '0' && this.state.displayValue == '0')return
+
+        
+        if(digit == '.' && this.state.displayValue){
+            this.state.digit += '.'
+            console.warn("no ponto")
+        }
         else {
-            this.state.digit += this.state.digit
+            this.state.digit += `${digit}`
+           
         }
         this.setState({displayValue: this.state.digit})
     }
     setOperation = op =>{
+
         if(!this.state.mem){
             this.state.infor[0] = this.state.digit
             this.state.digit = ''
-            this.state.currentOp = op
+            this.setState({currentOp: op})
             this.state.mem = true
         }
         else{
             this.state.infor[1] = this.state.digit
-
+            this.state.mem2 = true
             //console.warn(`${this.state.infor[0]}  ${this.state.currentOp} ${this.state.infor[1]} `)
             let buffer = eval(`${this.state.infor[0]} ${this.state.currentOp} ${this.state.infor[1]}`)
-            this.state.infor[0] = buffer
             this.state.digit = `${buffer}`
-             this.setState({displayValue: this.state.digit})
+            this.setState({displayValue: this.state.digit})
+            this.setState({currentOp: op,infor : [buffer, '']})
             console.warn(buffer)
 
             
