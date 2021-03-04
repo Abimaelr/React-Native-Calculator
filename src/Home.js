@@ -6,6 +6,7 @@ import Display from './Components/display'
 const initialState = {
     displayValue: '0',
     digit: '',
+    buffer: '0',
     infor: [0,0],
     mem: false,
     currentOp :''
@@ -23,29 +24,19 @@ export default class App extends Component
             digit: '',
             infor: [0,0],
             mem: false,
-            mem2: false,
             currentOp :''
             })
         
     }
     addDigit = digit =>{
-        console.warn(this.state.currentOp)
-        
-        if(this.state.mem2){
-            this.setState({
-                displayValue: '0',
-                digit: '',
-                currentOp :'',
-                mem2: false
-                })
-           
-        }
+
         if(digit == '0' && this.state.displayValue == '0')return
+        if(digit == '.' && this.state.displayValue.includes('.'))return
+        
 
         
         if(digit == '.' && this.state.displayValue){
             this.state.digit += '.'
-            console.warn("no ponto")
         }
         else {
             this.state.digit += `${digit}`
@@ -53,25 +44,42 @@ export default class App extends Component
         }
         this.setState({displayValue: this.state.digit})
     }
+    equal = () => {
+        this.state.infor[1] = this.state.digit
+        let result = eval(`${this.state.infor[0]} ${this.state.currentOp} ${this.state.infor[1]}`)
+        this.setState({displayValue: result})
+        this.setState({
+            digit: '',
+            infor: [0,0],
+            mem: false,
+            currentOp :''
+            })
+    }
     setOperation = op =>{
-
-        if(!this.state.mem){
+        
+        this.setState({currentOp: op})
+        if(!this.state.mem ){
             this.state.infor[0] = this.state.digit
             this.state.digit = ''
-            this.setState({currentOp: op})
             this.state.mem = true
+            this.setState({currentOp: op})
         }
         else{
+            this.setState({currentOp: op})
             this.state.infor[1] = this.state.digit
-            this.state.mem2 = true
             //console.warn(`${this.state.infor[0]}  ${this.state.currentOp} ${this.state.infor[1]} `)
-            let buffer = eval(`${this.state.infor[0]} ${this.state.currentOp} ${this.state.infor[1]}`)
-            this.state.digit = `${buffer}`
-            this.setState({displayValue: this.state.digit})
-            this.setState({currentOp: op,infor : [buffer, '']})
-            console.warn(buffer)
-
             
+            let buffer = eval(`${this.state.infor[0]} ${this.state.currentOp} ${this.state.infor[1]}`)
+         
+         
+            
+            this.state.digit = `${buffer}`
+
+            this.setState({displayValue: this.state.digit})
+            //Salva o valor na variável Infor e depois limpa o this.state.digit para a nova operacao
+            this.setState({currentOp: op,infor : [buffer, '']})  
+            this.state.currentOp = '';  
+            this.state.digit = '';   
         }
 
     }
@@ -86,17 +94,15 @@ export default class App extends Component
 
                 <View style={style.buttonView}>
                    
-                    <Botao func value={'/'}     onClick={this.setOperation}   />
-                    <Botao func value={'+/-'}   onClick={this.addDigit}  />
-                    <Botao func value={'%'}     onClick={this.addDigit}  />
-                    <Botao func value={'C'}     onClick={() => this.clearDisplay()}  />
+                    <Botao func value={'/'}           onClick={this.setOperation}   />
+                    <Botao func clear value={'C'}     onClick={() => this.clearDisplay()}  />
 
-                    <Botao func value={'x'}     onClick={this.addDigit}  />
+                    <Botao func value={'x'}     onClick={() => this.setOperation('*')}  />
                     <Botao value={9}            onClick={this.addDigit}/>
                     <Botao value={8}            onClick={this.addDigit}/>
                     <Botao value={7}            onClick={this.addDigit}/>  
 
-                    <Botao func value={'-'}     onClick={this.addDigit}   />
+                    <Botao func value={'-'}     onClick={this.setOperation}   />
                     <Botao value={6}            onClick={this.addDigit}/>
                     <Botao value={5}            onClick={this.addDigit} />
                     <Botao value={4}            onClick={this.addDigit}/>  
@@ -106,7 +112,7 @@ export default class App extends Component
                     <Botao value={2}            onClick={this.addDigit} />
                     <Botao value={1}            onClick={this.addDigit}  /> 
 
-                    <Botao func value={'='}     onClick={this.addDigit}/>
+                    <Botao func value={'='}     onClick={() => this.equal()}/>
                     <Botao value={'.'}          onClick={this.addDigit}/>
                     <Botao zero value={0}       onClick={this.addDigit}/>
                 </View>

@@ -12,6 +12,10 @@ export default (props) => {
     if(props.func) {
         styleButton.push(style.func)
     }
+    if(props.clear) {
+        styleButton.push(style.clear)
+    }
+
 
     return(
         <TouchableHighlight style={styleButton} onPress={() => props.onClick(props.value)}>
@@ -37,6 +41,10 @@ const style = StyleSheet.create({
     },
     func:{
         backgroundColor:'#fcb206'
+    },
+    clear:{
+        width: (Dimensions.get('window').width/4)*3,
+        backgroundColor:'#D04'
     }
 
 
