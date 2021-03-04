@@ -9,7 +9,8 @@ const initialState = {
     buffer: '0',
     infor: [0,0],
     mem: false,
-    currentOp :''
+    currentOp :'',
+    nOp: false
     }
 
 export default class App extends Component 
@@ -45,6 +46,17 @@ export default class App extends Component
         this.setState({displayValue: this.state.digit})
     }
     equal = () => {
+        if(!this.state.infor[0] && !this.state.infor[1]) return
+        if(this.state.infor[0] && !this.state.infor[1]){
+            let result = `${this.state.infor[0]}`
+             this.setState({displayValue: result})
+             this.setState({
+                 digit: '',
+                 infor: [0,0],
+                 mem: false,
+                 currentOp :''
+                 })
+        }
         this.state.infor[1] = this.state.digit
         let result = eval(`${this.state.infor[0]} ${this.state.currentOp} ${this.state.infor[1]}`)
         this.setState({displayValue: result})
@@ -56,23 +68,17 @@ export default class App extends Component
             })
     }
     setOperation = op =>{
-        
         this.setState({currentOp: op})
         if(!this.state.mem ){
             this.state.infor[0] = this.state.digit
             this.state.digit = ''
             this.state.mem = true
-            this.setState({currentOp: op})
         }
         else{
-            this.setState({currentOp: op})
             this.state.infor[1] = this.state.digit
             //console.warn(`${this.state.infor[0]}  ${this.state.currentOp} ${this.state.infor[1]} `)
-            
+            if(!this.state.infor[1]) return
             let buffer = eval(`${this.state.infor[0]} ${this.state.currentOp} ${this.state.infor[1]}`)
-         
-         
-            
             this.state.digit = `${buffer}`
 
             this.setState({displayValue: this.state.digit})
